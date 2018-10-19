@@ -561,6 +561,7 @@ Partial Public Class MainWindow
                 If xColumn = niBPM Then xMessage = Strings.Messages.PromptEnterBPM
                 If xColumn = niSTOP Then xMessage = Strings.Messages.PromptEnterSTOP
                 If xColumn = niSCROLL Then xMessage = Strings.Messages.PromptEnterSCROLL
+                If xColumn = niSPEED Then xMessage = Strings.Messages.PromptEnterSPEED
 
                 Dim valstr As String = InputBox(xMessage, Text)
                 Dim value As Double = Val(valstr) * 10000
@@ -583,7 +584,24 @@ Partial Public Class MainWindow
                     AddNote(n)
                     AddUndo(xUndo, xBaseRedo.Next)
                 End If
+                If (xColumn = niSPEED And valstr = "0") Or value <> 0 Then
+                    If xColumn <> niSPEED And value <= 0 Then value = 1
 
+                    Dim xUndo As UndoRedo.LinkedURCmd = Nothing
+                    Dim xRedo As UndoRedo.LinkedURCmd = New UndoRedo.Void
+                    Dim xBaseRedo As UndoRedo.LinkedURCmd = xRedo
+
+                    For xI1 = 1 To UBound(Notes)
+                        If Notes(xI1).VPosition = xVPosition AndAlso Notes(xI1).ColumnIndex = xColumn Then _
+                            RedoRemoveNote(Notes(xI1), xUndo, xRedo)
+                    Next
+
+                    Dim n = New Note(xColumn, xVPosition, value, 0, Hidden)
+                    RedoAddNote(n, xUndo, xRedo)
+
+                    AddNote(n)
+                    AddUndo(xUndo, xBaseRedo.Next)
+                End If
                 ShouldDrawTempNote = True
 
             Else
@@ -822,11 +840,24 @@ Partial Public Class MainWindow
             If NoteColumn = niBPM Then xMessage = Strings.Messages.PromptEnterBPM
             If NoteColumn = niSTOP Then xMessage = Strings.Messages.PromptEnterSTOP
             If NoteColumn = niSCROLL Then xMessage = Strings.Messages.PromptEnterSCROLL
+            If NoteColumn = niSPEED Then xMessage = Strings.Messages.PromptEnterSPEED
 
 
             Dim valstr As String = InputBox(xMessage, Me.Text)
             Dim PromptValue As Double = Val(valstr) * 10000
             If (NoteColumn = niSCROLL And valstr = "0") Or PromptValue <> 0 Then
+
+                Dim xUndo As UndoRedo.LinkedURCmd = Nothing
+                Dim xRedo As UndoRedo.LinkedURCmd = Nothing
+                RedoRelabelNote(Note, PromptValue, xUndo, xRedo)
+                If NoteIndex = 0 Then
+                    THBPM.Value = PromptValue / 10000
+                Else
+                    Notes(NoteIndex).Value = PromptValue
+                End If
+                AddUndo(xUndo, xRedo)
+            End If
+            If (NoteColumn = niSPEED And valstr = "0") Or PromptValue <> 0 Then
 
                 Dim xUndo As UndoRedo.LinkedURCmd = Nothing
                 Dim xRedo As UndoRedo.LinkedURCmd = Nothing

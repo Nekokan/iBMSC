@@ -160,6 +160,7 @@ Public Class MainWindow
     Dim hBPM(1295) As Long   'x10000
     Dim hSTOP(1295) As Long
     Dim hSCROLL(1295) As Long
+    Dim hSPEED(1295) As Long
 
     '----Grid Options
     Dim gSnap As Boolean = True
@@ -180,6 +181,7 @@ Public Class MainWindow
 
     Dim gDisplayBGAColumn As Boolean = True
     Dim gSCROLL As Boolean = True
+    Dim gSPEED As Boolean = True
     Dim gSTOP As Boolean = True
     Dim gBPM As Boolean = True
     'Dim gA8 As Boolean = False
@@ -1334,6 +1336,7 @@ EndSearch:
         ReDim hBPM(1295)    'x10000
         ReDim hSTOP(1295)
         ReDim hSCROLL(1295)
+        ReDim hSPEED(1295)
         THGenre.Text = ""
         THTitle.Text = ""
         THArtist.Text = ""
@@ -1379,6 +1382,7 @@ EndSearch:
         ReDim hBPM(1295)    'x10000
         ReDim hSTOP(1295)
         ReDim hSCROLL(1295)
+        ReDim hSPEED(1295)
         THGenre.Text = ""
         THTitle.Text = ""
         THArtist.Text = ""
@@ -2085,13 +2089,14 @@ EndSearch:
             With Notes(i)
                 Dim row As Integer = -1
                 Select Case .ColumnIndex
-                    Case niSCROLL : row = 0
-                    Case niBPM : row = 1
-                    Case niSTOP : row = 2
-                    Case niA1, niA2, niA3, niA4, niA5, niA6, niA7, niA8 : row = 3
-                    Case niD1, niD2, niD3, niD4, niD5, niD6, niD7, niD8 : row = 4
-                    Case Is >= niB : row = 5
-                    Case Else : row = 6
+                    Case niSPEED : row = 0
+                    Case niSCROLL : row = 1
+                    Case niBPM : row = 2
+                    Case niSTOP : row = 3
+                    Case niA1, niA2, niA3, niA4, niA5, niA6, niA7, niA8 : row = 4
+                    Case niD1, niD2, niD3, niD4, niD5, niD6, niD7, niD8 : row = 5
+                    Case Is >= niB : row = 6
+                    Case Else : row = 7
                 End Select
 
 
@@ -3940,6 +3945,19 @@ Jump2:
         gSCROLL = CGSCROLL.Checked
 
         column(niSCROLL).isVisible = gSCROLL
+
+        If IsInitializing Then Exit Sub
+        For xI1 As Integer = 1 To UBound(Notes)
+            Notes(xI1).Selected = Notes(xI1).Selected And nEnabled(Notes(xI1).ColumnIndex)
+        Next
+        'AddUndo(xUndo, xRedo)
+        UpdateColumnsX()
+        RefreshPanelAll()
+    End Sub
+    Private Sub CGSPEED_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CGSPEED.CheckedChanged
+        gSPEED = CGSPEED.Checked
+
+        column(niSPEED).isVisible = gSPEED
 
         If IsInitializing Then Exit Sub
         For xI1 As Integer = 1 To UBound(Notes)
