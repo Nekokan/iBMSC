@@ -17,6 +17,7 @@ Partial Public Class MainWindow
         ReDim hBPM(1295)    'x10000
         ReDim hSTOP(1295)
         ReDim hSCROLL(1295)
+        ReDim hSPEED(1295)
         Me.InitializeNewBMS()
         Me.InitializeOpenBMS()
 
@@ -62,6 +63,8 @@ Partial Public Class MainWindow
 
             ElseIf sLineTrim.StartsWith("#SCROLL", StringComparison.CurrentCultureIgnoreCase) Then
                 hSCROLL(C36to10(Mid(sLineTrim, Len("#SCROLL") + 1, 2))) = Val(Mid(sLineTrim, Len("#SCROLL") + 4)) * 10000
+            ElseIf sLineTrim.StartsWith("#SPEED", StringComparison.CurrentCultureIgnoreCase) Then
+                hSPEED(C36to10(Mid(sLineTrim, Len("#SPEED") + 1, 2))) = Val(Mid(sLineTrim, Len("#SPEED") + 4)) * 10000
 
 
             ElseIf sLineTrim.StartsWith("#TITLE", StringComparison.CurrentCultureIgnoreCase) Then
@@ -200,6 +203,7 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
                     If Channel = "08" Then .Value = hBPM(C36to10(Mid(sLineTrim, xI1, 2)))
                     If Channel = "09" Then .Value = hSTOP(C36to10(Mid(sLineTrim, xI1, 2)))
                     If Channel = "SC" Then .Value = hSCROLL(C36to10(Mid(sLineTrim, xI1, 2)))
+                    If Channel = "SP" Then .Value = hSPEED(C36to10(Mid(sLineTrim, xI1, 2)))
                 End With
 
             Next
@@ -234,7 +238,7 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
                                        "61", "62", "63", "64", "65", "66", "68", "69",
                                        "D1", "D2", "D3", "D4", "D5", "D6", "D8", "D9",
                                        "E1", "E2", "E3", "E4", "E5", "E6", "E8", "E9",
-                                       "SC"}
+                                       "SC", "SP"}
     ' 71 through 89 are reserved
     '"71", "72", "73", "74", "75", "76", "78", "79",
     '"81", "82", "83", "84", "85", "86", "88", "89",
@@ -253,6 +257,7 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
         ReDim hBPM(0)
         ReDim hSTOP(0)
         ReDim hSCROLL(0)
+        ReDim hSPEED(0)
 
         Dim xNTInput As Boolean = NTInput
         Dim xKBackUp() As Note = Notes
@@ -319,6 +324,9 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
                                                   Strings.Messages.SavedFileWillContainErrors, MsgBoxStyle.Exclamation)
         If UBound(hSCROLL) > 1295 Then MsgBox(Strings.Messages.SaveWarning & vbCrLf &
                                            Strings.Messages.SCROLLOverflowError & UBound(hSCROLL) & " > " & 1295 & vbCrLf &
+                                         Strings.Messages.SavedFileWillContainErrors, MsgBoxStyle.Exclamation)
+        If UBound(hSPEED) > 1295 Then MsgBox(Strings.Messages.SaveWarning & vbCrLf &
+                                           Strings.Messages.SPEEDOverflowError & UBound(hSPEED) & " > " & 1295 & vbCrLf &
                                          Strings.Messages.SavedFileWillContainErrors, MsgBoxStyle.Exclamation)
 
         ' Add expansion text
@@ -388,6 +396,10 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
         For i = 1 To UBound(hSCROLL)
             xStrHeader &= "#SCROLL" &
                 C10to36(i) & " " & WriteDecimalWithDot(hSCROLL(i) / 10000) & vbCrLf
+        Next
+        For i = 1 To UBound(hSPEED)
+            xStrHeader &= "#SPEED" &
+                    C10to36(i) & " " & WriteDecimalWithDot(hSPEED(i) / 10000) & vbCrLf
         Next
 
         Return xStrHeader
@@ -472,6 +484,17 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
                             hSCROLL(UBound(hSCROLL)) = currentNote.Value
                         End If
                         NoteStrings(UBound(NoteStrings)) = C10to36(ScrollIndex)
+                    ElseIf CurrentBMSChannel = "SP" Then 'If SPEED
+                        Dim SpeedIndex
+                        For SpeedIndex = 1 To UBound(hSPEED) ' find SPEED value in existing array
+                            If currentNote.Value = hSPEED(SpeedIndex) Then Exit For
+                        Next
+
+                        If SpeedIndex > UBound(hSPEED) Then ' Didn't find it, add it
+                            ReDim Preserve hSPEED(UBound(hSPEED) + 1)
+                            hSPEED(UBound(hSPEED)) = currentNote.Value
+                        End If
+                        NoteStrings(UBound(NoteStrings)) = C10to36(SpeedIndex)
                     Else
                         NoteStrings(UBound(NoteStrings)) = C10to36(currentNote.Value \ 10000)
                     End If
@@ -507,6 +530,8 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
                         xprevNotes(UBound(xprevNotes)).Value = IIf(STOPx1296, hSTOP(C36to10(NoteStrings(i))), hSTOP(Convert.ToInt32(NoteStrings(i), 16)))
                     If BMSChannelList(CurrentBMSChannel) = "SC" Then _
                         xprevNotes(UBound(xprevNotes)).Value = hSCROLL(C36to10(NoteStrings(i)))
+                    If BMSChannelList(CurrentBMSChannel) = "SP" Then _
+                        xprevNotes(UBound(xprevNotes)).Value = hSPEED(C36to10(NoteStrings(i)))
                     Continue For
                 End If
                 If xStrKey(CInt(relativeMeasurePos(i) / xGCD)) <> "00" Then
@@ -615,6 +640,7 @@ AddExpansion:       xExpansion &= sLine & vbCrLf
         ReDim hBPM(1295)    'x10000
         ReDim hSTOP(1295)
         ReDim hSCROLL(1295)
+        ReDim hSPEED(1295)
         Me.InitializeNewBMS()
 
         With Notes(0)
@@ -825,6 +851,7 @@ Jump1:
                     CGBLP.Checked = xPref And &H200000
                     CGSTOP.Checked = xPref And &H400000
                     CGSCROLL.Checked = xPref And &H20000000
+                    CGSPEED.Checked = xPref And &H40000000
                     CGBPM.Checked = xPref And &H800000
 
                     CGSnap.Checked = xPref And &H1000000
@@ -1010,6 +1037,7 @@ EndOfSub:
             If gSTOP Then xPref = xPref Or &H400000
             If gBPM Then xPref = xPref Or &H800000
             If gSCROLL Then xPref = xPref Or &H20000000
+            If gSPEED Then xPref = xPref Or &H40000000
             If gSnap Then xPref = xPref Or &H1000000
             If DisableVerticalMove Then xPref = xPref Or &H2000000
             If spLock(0) Then xPref = xPref Or &H4000000

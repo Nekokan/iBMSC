@@ -3,38 +3,40 @@
 Partial Public Class MainWindow
 
     Public Const niMeasure As Integer = 0
-    Public Const niSCROLL As Integer = 1
-    Public Const niBPM As Integer = 2
-    Public Const niSTOP As Integer = 3
-    Public Const niS1 As Integer = 4
+    Public Const niSPEED As Integer = 1
+    Public Const niSCROLL As Integer = 2
+    Public Const niBPM As Integer = 3
+    Public Const niSTOP As Integer = 4
+    Public Const niS1 As Integer = 5
 
-    Public Const niA1 As Integer = 5
-    Public Const niA2 As Integer = 6
-    Public Const niA3 As Integer = 7
-    Public Const niA4 As Integer = 8
-    Public Const niA5 As Integer = 9
-    Public Const niA6 As Integer = 10
-    Public Const niA7 As Integer = 11
-    Public Const niA8 As Integer = 12
-    Public Const niS2 As Integer = 13
+    Public Const niA1 As Integer = 6
+    Public Const niA2 As Integer = 7
+    Public Const niA3 As Integer = 8
+    Public Const niA4 As Integer = 9
+    Public Const niA5 As Integer = 10
+    Public Const niA6 As Integer = 11
+    Public Const niA7 As Integer = 12
+    Public Const niA8 As Integer = 13
+    Public Const niS2 As Integer = 14
 
-    Public Const niD1 As Integer = 14
-    Public Const niD2 As Integer = 15
-    Public Const niD3 As Integer = 16
-    Public Const niD4 As Integer = 17
-    Public Const niD5 As Integer = 18
-    Public Const niD6 As Integer = 19
-    Public Const niD7 As Integer = 20
-    Public Const niD8 As Integer = 21
-    Public Const niS3 As Integer = 22
+    Public Const niD1 As Integer = 15
+    Public Const niD2 As Integer = 16
+    Public Const niD3 As Integer = 17
+    Public Const niD4 As Integer = 18
+    Public Const niD5 As Integer = 19
+    Public Const niD6 As Integer = 20
+    Public Const niD7 As Integer = 21
+    Public Const niD8 As Integer = 22
+    Public Const niS3 As Integer = 23
 
-    Public Const niBGA As Integer = 23
-    Public Const niLAYER As Integer = 24
-    Public Const niPOOR As Integer = 25
-    Public Const niS4 As Integer = 26
-    Public Const niB As Integer = 27
+    Public Const niBGA As Integer = 24
+    Public Const niLAYER As Integer = 25
+    Public Const niPOOR As Integer = 26
+    Public Const niS4 As Integer = 27
+    Public Const niB As Integer = 28
 
     Public column() As Column = {New Column(0, 50, "Measure", False, True, True, 0, 0, &HFF00FFFF, 0, &HFF00FFFF, 0),
+                              New Column(50, 60, "SPEED", True, True, True, 99, 0, &HFFFF0000, 0, &HFFFF0000, 0),
                               New Column(50, 60, "SCROLL", True, True, True, 99, 0, &HFFFF0000, 0, &HFFFF0000, 0),
                               New Column(110, 60, "BPM", True, True, True, 3, 0, &HFFFF0000, 0, &HFFFF0000, 0),
                               New Column(170, 50, "STOP", True, True, True, 9, 0, &HFFFF0000, 0, &HFFFF0000, 0),
@@ -77,6 +79,8 @@ Partial Public Class MainWindow
         If iCol = niBPM AndAlso (xVal / 10000 <> xVal \ 10000 Or xVal >= 2560000 Or xVal < 0) Then bmsBaseChannel += idflBPM
 
         If iCol = niSCROLL Then Return "SC"
+
+        If iCol = niSPEED Then Return "SP"
 
         ' p1 side
         If iCol >= niA1 And iCol <= niA8 Then
@@ -147,6 +151,7 @@ Partial Public Class MainWindow
             Case "03", "08" : Return niBPM
             Case "09" : Return niSTOP
             Case "SC" : Return niSCROLL
+            Case "SP" : Return niSPEED
             Case "04" : Return niBGA
             Case "07" : Return niLAYER
             Case "06" : Return niPOOR
