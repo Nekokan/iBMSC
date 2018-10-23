@@ -240,6 +240,7 @@ Partial Class MainWindow
         Me.CGBPM = New System.Windows.Forms.ToolStripMenuItem()
         Me.CGSTOP = New System.Windows.Forms.ToolStripMenuItem()
         Me.CGSCROLL = New System.Windows.Forms.ToolStripMenuItem()
+        Me.CGSPEED = New System.Windows.Forms.ToolStripMenuItem()
         Me.CGBLP = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnOptions = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnNTInput = New System.Windows.Forms.ToolStripMenuItem()
@@ -2809,7 +2810,7 @@ Partial Class MainWindow
         '
         'mnSys
         '
-        Me.mnSys.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnSMenu, Me.mnSTB, Me.mnSOP, Me.mnSStatus, Me.mnSLSplitter, Me.mnSRSplitter, Me.ToolStripSeparator21, Me.CGShow, Me.CGShowS, Me.CGShowBG, Me.CGShowM, Me.CGShowMB, Me.CGShowV, Me.CGShowC, Me.ToolStripSeparator22, Me.CGBPM, Me.CGSTOP, Me.CGSCROLL, Me.CGBLP})
+        Me.mnSys.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnSMenu, Me.mnSTB, Me.mnSOP, Me.mnSStatus, Me.mnSLSplitter, Me.mnSRSplitter, Me.ToolStripSeparator21, Me.CGShow, Me.CGShowS, Me.CGShowBG, Me.CGShowM, Me.CGShowMB, Me.CGShowV, Me.CGShowC, Me.ToolStripSeparator22, Me.CGBPM, Me.CGSTOP, Me.CGSCROLL, Me.CGSPEED, Me.CGBLP})
         Me.mnSys.Name = "mnSys"
         Me.mnSys.Size = New System.Drawing.Size(44, 19)
         Me.mnSys.Text = "&View"
@@ -2964,6 +2965,15 @@ Partial Class MainWindow
         Me.CGSCROLL.Name = "CGSCROLL"
         Me.CGSCROLL.Size = New System.Drawing.Size(172, 22)
         Me.CGSCROLL.Text = "SCROLL"
+        '
+        'CGSPEED
+        '
+        Me.CGSPEED.Checked = True
+        Me.CGSPEED.CheckOnClick = True
+        Me.CGSPEED.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CGSPEED.Name = "CGSPEED"
+        Me.CGSPEED.Size = New System.Drawing.Size(172, 22)
+        Me.CGSPEED.Text = "SPEED"
         '
         'CGBLP
         '
@@ -4309,6 +4319,7 @@ Partial Class MainWindow
     Friend WithEvents CGBLP As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CGSTOP As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents CGSCROLL As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents CGSPEED As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents nBeatN As System.Windows.Forms.NumericUpDown
     Friend WithEvents LBeat As System.Windows.Forms.ListBox
     Friend WithEvents Label7 As System.Windows.Forms.Label
